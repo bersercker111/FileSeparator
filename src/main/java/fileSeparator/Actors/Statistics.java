@@ -25,12 +25,11 @@ public class Statistics extends AbstractActor {
     private StatsMessage getStatsMessage() {
         StringBuilder builder = new StringBuilder();
         builder.append("Statistics : ").append(System.lineSeparator()).append(System.lineSeparator());
-
         for (String key : groups.keySet()) {
-            builder.append("Group ").append(key).append(" ").append(groups.get(key)).append(" lines.")
-                    .append(System.lineSeparator());
+            builder.append("Group ").append(key).append(": ").append(groups.get(key)).append(" lines.")
+                    .append(" ").append(groups.get(key) * 100 / sum).append("% of total.").append(System.lineSeparator());
         }
-        builder.append(" Total: ").append(sum).append(" lines.");
+        builder.append(" Total : ").append(sum).append(" lines.");
         return new StatsMessage(builder.toString());
     }
 
