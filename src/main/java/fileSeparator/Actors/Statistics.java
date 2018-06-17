@@ -5,6 +5,7 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,20 +45,21 @@ public class Statistics extends AbstractActor {
                     sum++;
 
                 })
-                .match(GetMessage.class, s -> {
-                    sender().tell(getStatsMessage(), getSelf());
-                })
-                .match(LogMessage.class, s -> {
-                    log.info(getStatsMessage().message);
-                })
+                .match(GetStringMessage.class, s -> sender().tell(getStatsMessage(), getSelf()))
+                .match(LogMessage.class, s -> log.info(getStatsMessage().message))
+                .match(GetMapMessage.class, s -> sender().tell(Collections.unmodifiableMap(groups), getSelf()))
                 .build();
     }
 
     //messages
-    public static class GetMessage {
+    public static class GetStringMessage {
     }
 
     public static class LogMessage {
+    }
+
+    public static class GetMapMessage {
+
     }
 
     public static class Data {
