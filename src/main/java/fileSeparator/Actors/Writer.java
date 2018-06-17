@@ -23,13 +23,15 @@ public class Writer extends AbstractActor {
     private final ActorRef statisticsActor;
     private BufferedWriter bufferedWriter = null;
     private boolean canWriteToFile = false;
+    private String originalFilePath;
 
 
-    public Writer(String name, ActorRef statisticsActor) {
+    public Writer(String name, String originalFilePath, ActorRef statisticsActor) {
         this.name = name;
         this.statisticsActor = statisticsActor;
+        this.originalFilePath = originalFilePath;
         try {
-            URL url = this.getClass().getResource("/jun-mid-task-" + name + ".csv");
+            URL url = this.getClass().getResource(originalFilePath.replace(".csv", "-" + name + ".csv"));
             if (url != null) {
                 String path = URLDecoder.decode(url.getPath(), "UTF-8");
                 File file = new File(path);
@@ -42,8 +44,8 @@ public class Writer extends AbstractActor {
         }
     }
 
-    public static Props props(String name, ActorRef statisticsActor) {
-        return Props.create(Writer.class, () -> new Writer(name, statisticsActor));
+    public static Props props(String name, String originalFilePath, ActorRef statisticsActor) {
+        return Props.create(Writer.class, () -> new Writer(name, originalFilePath, statisticsActor));
     }
 
     private void writeLine(Line line) throws IOException {

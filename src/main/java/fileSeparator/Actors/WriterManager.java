@@ -21,24 +21,26 @@ public class WriterManager extends AbstractActor {
     private final Map<ActorRef, Boolean> isTerminated;
     private final ActorRef statisticsActor;
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+    private String originalFilePath;
 
-    public WriterManager(ActorRef statisticsActor) {
+    public WriterManager(ActorRef statisticsActor, String originalFilePath) {
+        this.originalFilePath = originalFilePath;
         this.statisticsActor = statisticsActor;
         ActorContext context = getContext();
         writers = new HashMap<>();
         isTerminated = new HashMap<>();
-        writers.put(NAME_ONE, context.actorOf(Writer.props(NAME_ONE, statisticsActor)));
-        writers.put(NAME_TWO, context.actorOf(Writer.props(NAME_TWO, statisticsActor)));
-        writers.put(NAME_THREE, context.actorOf(Writer.props(NAME_THREE, statisticsActor)));
-        writers.put(NAME_FOUR, context.actorOf(Writer.props(NAME_FOUR, statisticsActor)));
+        writers.put(NAME_ONE, context.actorOf(Writer.props(NAME_ONE, originalFilePath, statisticsActor)));
+        writers.put(NAME_TWO, context.actorOf(Writer.props(NAME_TWO, originalFilePath, statisticsActor)));
+        writers.put(NAME_THREE, context.actorOf(Writer.props(NAME_THREE, originalFilePath, statisticsActor)));
+        writers.put(NAME_FOUR, context.actorOf(Writer.props(NAME_FOUR, originalFilePath, statisticsActor)));
         for (ActorRef writer : writers.values()) {
             context.watch(writer);
             isTerminated.put(writer, false);
         }
     }
 
-    public static Props props(ActorRef statisticsActor) {
-        return Props.create(WriterManager.class, () -> new WriterManager(statisticsActor));
+    public static Props props(ActorRef statisticsActor, String originalFilePath) {
+        return Props.create(WriterManager.class, () -> new WriterManager(statisticsActor, originalFilePath));
     }
 
     public boolean areAllTerminated() {

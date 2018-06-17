@@ -19,15 +19,15 @@ public class FileSeparator {
         this.system = actorSystem;
     }
 
-    public void processFile(String input) {
+    public void processFile(String originalFilePath) {
 
 
         final ActorRef statisticsActor = system.actorOf(Statistics.props(), "statisticsAuthor");
-        final ActorRef writerManager = system.actorOf(WriterManager.props(statisticsActor), "readerActor");
+        final ActorRef writerManager = system.actorOf(WriterManager.props(statisticsActor, originalFilePath), "readerActor");
         final File inputFile;
         try {
-            URL fileResource = this.getClass().getResource(input);
-            if (fileResource == null) throw new FileNotFoundException("File not found " + input);
+            URL fileResource = this.getClass().getResource(originalFilePath);
+            if (fileResource == null) throw new FileNotFoundException("File not found " + originalFilePath);
             inputFile = new File(URLDecoder.decode(fileResource.getPath(), "UTF-8"));
             Files.lines(inputFile.toPath())
                     .filter(line -> !line.isEmpty())

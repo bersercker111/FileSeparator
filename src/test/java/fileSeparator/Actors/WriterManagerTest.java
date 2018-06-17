@@ -28,7 +28,7 @@ public class WriterManagerTest {
     @Test
     public void TestStopMessage() {
         final TestKit testProbe = new TestKit(system);
-        ActorRef writerManager = system.actorOf(WriterManager.props(testProbe.getRef()));
+        ActorRef writerManager = system.actorOf(WriterManager.props(testProbe.getRef(), "/jun-mid-task.csv"));
         testProbe.watch(writerManager);
         writerManager.tell(new WriterManager.StopMessage(), ActorRef.noSender());
         Statistics.LogMessage logMessage = testProbe.expectMsgClass(Statistics.LogMessage.class);
