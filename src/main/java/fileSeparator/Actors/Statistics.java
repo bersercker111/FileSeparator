@@ -47,7 +47,7 @@ public class Statistics extends AbstractActor {
                 })
                 .match(GetStringMessage.class, s -> sender().tell(getStatsMessage(), getSelf()))
                 .match(LogMessage.class, s -> log.info(getStatsMessage().message))
-                .match(GetMapMessage.class, s -> sender().tell(Collections.unmodifiableMap(groups), getSelf()))
+                .match(GetMapMessage.class, s -> sender().tell(Collections.unmodifiableMap(new HashMap<>(groups)), getSelf()))
                 .build();
     }
 

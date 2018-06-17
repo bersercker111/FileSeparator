@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class StatisticsTests {
+public class StatisticsTest {
     static ActorSystem system;
 
     @BeforeClass

@@ -1,7 +1,9 @@
 package fileSeparator.Actors;
 
+
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.Terminated;
 import akka.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -9,8 +11,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class WriterTests {
-
+public class WriterManagerTest {
     static ActorSystem system;
 
     @BeforeClass
@@ -25,12 +26,14 @@ public class WriterTests {
     }
 
     @Test
-    public void WriterTest() {
+    public void TestStopMessage() {
         final TestKit testProbe = new TestKit(system);
-        String writerName = "one";
-        ActorRef writerActor = system.actorOf(Writer.props(writerName, testProbe.getRef()));
-        writerActor.tell(new WriterManager.Line("aaaaaa"), testProbe.getRef());
-        Statistics.Data data = testProbe.expectMsgClass(Statistics.Data.class);
-        assertEquals(data.group, writerName);
+        ActorRef writerManager = system.actorOf(WriterManager.props(testProbe.getRef()));
+        testProbe.watch(writerManager);
+        writerManager.tell(new WriterManager.StopMessage(), ActorRef.noSender());
+        Statistics.LogMessage logMessage = testProbe.expectMsgClass(Statistics.LogMessage.class);
+        final Terminated msg = testProbe.expectMsgClass(Terminated.class);
+        assertEquals(msg.getActor(), writerManager);
+
     }
 }
