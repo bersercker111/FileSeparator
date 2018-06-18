@@ -30,6 +30,7 @@ public class Writer extends AbstractActor {
         this.name = name;
         this.statisticsActor = statisticsActor;
         this.originalFilePath = originalFilePath;
+        //output file is written to target/classes
         try {
             URL url = this.getClass().getResource(originalFilePath.replace(".csv", "-" + name + ".csv"));
             if (url != null) {
