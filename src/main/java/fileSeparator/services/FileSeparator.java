@@ -6,14 +6,13 @@ import fileSeparator.Actors.Statistics;
 import fileSeparator.Actors.WriterManager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileSeparator {
     private ActorSystem system;
+
 
     public FileSeparator(ActorSystem actorSystem) {
         this.system = actorSystem;
@@ -26,10 +25,7 @@ public class FileSeparator {
         final ActorRef writerManager = system.actorOf(WriterManager.props(statisticsActor, originalFilePath), "readerActor");
         final File inputFile;
         try {
-            URL fileResource = this.getClass().getResource(originalFilePath);
-            if (fileResource == null) throw new FileNotFoundException("File not found " + originalFilePath);
-            inputFile = new File(URLDecoder.decode(fileResource.getPath(), "UTF-8"));
-            Files.lines(inputFile.toPath())
+            Files.lines(Paths.get(originalFilePath))
                     .filter(line -> !line.isEmpty())
                     .forEach(line -> writerManager.tell(new WriterManager.Line(line), ActorRef.noSender()));
             writerManager.tell(new WriterManager.StopMessage(), ActorRef.noSender());

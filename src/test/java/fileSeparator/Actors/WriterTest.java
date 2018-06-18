@@ -28,7 +28,7 @@ public class WriterTest {
     public void WriterTests() {
         final TestKit testProbe = new TestKit(system);
         String writerName = "one";
-        ActorRef writerActor = system.actorOf(Writer.props(writerName, "/jun-mid-task.csv", testProbe.getRef()));
+        ActorRef writerActor = system.actorOf(Writer.props(writerName, "D:/jun-mid-task.csv", testProbe.getRef()));
         writerActor.tell(new WriterManager.Line("aaaaaa"), testProbe.getRef());
         Statistics.Data data = testProbe.expectMsgClass(Statistics.Data.class);
         assertEquals(data.group, writerName);
